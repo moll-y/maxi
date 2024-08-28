@@ -22,19 +22,23 @@ func udpServer(cmds chan Command) {
 				continue
 			}
 			go (func() {
+				ip := addr.(*net.UDPAddr).IP.String()
 				iss := buf[0]
 				if iss != 0x01 {
 					return
 				}
 				req := buf[1]
-				if req != 0x00 && req != 0x01 {
+				if req == 0x00 {
+					c <- ip
+					return
+				}
+				if req != 0x01 {
 					return
 				}
 				msg := buf[2]
-				if req == 0x01 && msg == 0x00 {
+				if msg == 0x00 {
 					return
 				}
-				ip := addr.(*net.UDPAddr).IP.String()
 				cmds <- Command{IP: ip, Payload: msg}
 				c <- ip
 			})()
