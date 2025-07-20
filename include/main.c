@@ -1,0 +1,36 @@
+#include "acker.h"
+#include "udp.h"
+
+#define PACKET_RATE_HZ 30
+#define INTERVAL_US (1000000 / PACKET_RATE_HZ)
+
+int main(int argc, char *argv[]) {
+  struct acker acker;
+  if (acker_make(&acker) < 0) {
+    return -1;
+  }
+
+  struct udp udp;
+  if (udp_make(&udp, &acker) < 0) {
+    return -1;
+  }
+
+  while (1) {
+    usleep(INTERVAL_US);
+    uint8_t packet[4];
+
+    const ssize_t sent_bytes = udp_send(&udp, packet, sizeof(packet));
+    if (sent_bytes < 0) {
+      fprintf(stderr, "Could not send packet.\n");
+    }
+
+    const ssize_t received_bytes = udp_recv(&udp, packet, sizeof(packet));
+    if (received_bytes < 0) {
+      fprintf(stderr, "Could not receive packet.\n");
+      continue;
+    }
+  }
+
+  udp_free(&udp);
+  return 0;
+}
