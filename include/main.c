@@ -1,5 +1,7 @@
 #include "acker.h"
 #include "udp.h"
+#include <stdio.h>
+#include <unistd.h>
 
 #define PACKET_RATE_HZ 30
 #define INTERVAL_US (1000000 / PACKET_RATE_HZ)

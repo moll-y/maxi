@@ -3,13 +3,6 @@
 
 #include "acker.h"
 #include <arpa/inet.h>
-#include <fcntl.h>
-#include <netinet/in.h>
-#include <stdint.h>
-#include <stdio.h>
-#include <sys/socket.h>
-#include <sys/types.h>
-#include <unistd.h>
 
 struct udp {
   int sockfd;
