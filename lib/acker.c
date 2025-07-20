@@ -7,7 +7,7 @@
 #define BITFIELD_LENGTH 32
 #define ARRAY_LENGTH 32
 
-bool is_sequence_greater_than(uint8_t next, uint8_t actual);
+bool is_next_sequence_greater_than_actual(uint8_t next, uint8_t actual);
 
 void acker_make(struct acker *acker) {
   acker->local_sequence = 0;
@@ -37,8 +37,8 @@ void acker_wrap(struct acker *acker, uint8_t *packet) {
 }
 
 void acker_unwrap(struct acker *acker, uint8_t *packet) {
-  if (!is_sequence_greater_than(packet[PACKET_SEQUENCE],
-                                acker->remote_sequence)) {
+  if (!is_next_sequence_greater_than_actual(packet[PACKET_SEQUENCE],
+                                            acker->remote_sequence)) {
     return;
   }
   acker->remote_sequence = packet[PACKET_SEQUENCE];
@@ -46,7 +46,7 @@ void acker_unwrap(struct acker *acker, uint8_t *packet) {
   acker->index = (acker->index + 1) % BITFIELD_LENGTH;
 }
 
-inline bool is_sequence_greater_than(uint8_t next, uint8_t actual) {
+inline bool is_next_sequence_greater_than_actual(uint8_t next, uint8_t actual) {
   return ((next > actual) && (next - actual <= HALF_SEQUENCE_RANGE_8)) ||
          ((next < actual) && (actual - next > HALF_SEQUENCE_RANGE_8));
 }
