@@ -35,9 +35,13 @@ ssize_t udp_send(struct udp *udp, uint8_t *packet, uint8_t packet_size) {
 }
 
 ssize_t udp_recv(struct udp *udp, uint8_t *packet, uint8_t packet_size) {
-  acker_unwrap(udp->acker, packet);
-  return recvfrom(udp->sockfd, packet, packet_size, 0,
-                  (struct sockaddr *)&udp->name, &udp->size);
+  const ssize_t received_bytes =
+      recvfrom(udp->sockfd, packet, packet_size, 0,
+               (struct sockaddr *)&udp->name, &udp->size);
+  if (received_bytes >= 0) {
+    acker_unwrap(udp->acker, packet);
+  }
+  return received_bytes;
 }
 
 void udp_free(struct udp *udp) { close(udp->sockfd); }

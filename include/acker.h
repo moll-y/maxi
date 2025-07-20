@@ -1,6 +1,7 @@
 #ifndef ACKER_H_
 #define ACKER_H_
 
+#include <stdbool.h>
 #include <stdint.h>
 
 struct acker {
@@ -11,7 +12,7 @@ struct acker {
   uint8_t index;
 };
 
-int acker_make(struct acker *acker);
+void acker_make(struct acker *acker);
 
 void acker_wrap(struct acker *acker, uint8_t *packet);
 

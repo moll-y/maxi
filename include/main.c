@@ -1,4 +1,5 @@
 #include "acker.h"
+#include "packet.h"
 #include "udp.h"
 #include <stdio.h>
 #include <unistd.h>
@@ -8,9 +9,7 @@
 
 int main(int argc, char *argv[]) {
   struct acker acker;
-  if (acker_make(&acker) < 0) {
-    return -1;
-  }
+  acker_make(&acker);
 
   struct udp udp;
   if (udp_make(&udp, &acker) < 0) {
@@ -19,7 +18,7 @@ int main(int argc, char *argv[]) {
 
   while (1) {
     usleep(INTERVAL_US);
-    uint8_t packet[4];
+    uint8_t packet[PACKET_LENGTH];
 
     const ssize_t sent_bytes = udp_send(&udp, packet, sizeof(packet));
     if (sent_bytes < 0) {
@@ -29,7 +28,6 @@ int main(int argc, char *argv[]) {
     const ssize_t received_bytes = udp_recv(&udp, packet, sizeof(packet));
     if (received_bytes < 0) {
       fprintf(stderr, "Could not receive packet.\n");
-      continue;
     }
   }
 
